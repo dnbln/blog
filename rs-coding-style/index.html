@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+      <!-- Enable responsiveness on mobile devices-->
+      <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+
+      <title></title>
+
+      
+        <link rel="alternate" type="application/atom+xml" title="RSS" href="https://blog.dnbln.dev/atom.xml">
+      
+
+      
+          <link rel="stylesheet" href="https://blog.dnbln.dev/site.css">
+      
+
+      
+      
+    </head>
+
+    <body class="hack dark main container">
+        
+    
+        
+                
+                    <header>
+                        <nav itemscope itemtype="http://schema.org/SiteNavigationElement">
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;blog.dnbln.dev&#x2F;">
+                                <span itemprop="name">Home
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;blog.dnbln.dev&#x2F;&#x2F;categories">
+                                <span itemprop="name">Categories
+                                </span></a>
+                        
+                            <a itemprop="url"
+                               class=""
+                               href="https:&#x2F;&#x2F;blog.dnbln.dev&#x2F;&#x2F;tags">
+                                <span itemprop="name">Tags
+                                </span></a>
+                        
+                        </nav>
+                    </header>
+                
+            
+    
+
+<article itemscope itemtype="http://schema.org/BlogPosting">
+    <header>
+        <h1 itemprop="headline">Rust coding style</h1>
+        <span class="muted">
+    <svg style="margin-bottom:-3px" class="i-clock" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <circle cx="16" cy="16" r="14"/>
+        <path d="M16 8 L16 16 20 20"/>
+    </svg>
+    <span>4 minute read</span>
+    <svg style="margin-bottom: -3px" class="i-edit" viewBox="0 0 32 32"
+         width="16" height="16" fill="none" stroke="currentcolor"
+         stroke-linecap="round" stroke-linejoin="round" stroke-width="6.25%">
+        <path d="M30 7 L25 2 5 22 3 29 10 27 Z M21 6 L26 11 Z M5 22 L10 27 Z"/>
+    </svg>
+
+    <span>Published: 2022-07-22</span>
+
+    
+</span>
+    </header>
+    <div itemprop="articleBody">
+      <p>Following are some of my reflections on how I would improve my Rust code.</p>
+<h2 id="guards">Guards</h2>
+<pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5c6370;">/// Checks that x is between 1 and 100, prime, and a</span><span>
+</span><span style="color:#5c6370;">/// palindrome, and prints it if that is the case.</span><span>
+</span><span style="color:#c678dd;">fn </span><span style="color:#61afef;">f</span><span>(</span><span style="color:#e06c75;">x</span><span>: </span><span style="color:#c678dd;">i32</span><span>) {</span><span>
+</span><span>    </span><span style="color:#c678dd;">if</span><span> x </span><span style="color:#c678dd;">&gt;= </span><span style="color:#e5c07b;">1 </span><span style="color:#c678dd;">&amp;&amp;</span><span> x </span><span style="color:#c678dd;">&lt;= </span><span style="color:#e5c07b;">100 </span><span>{</span><span>
+</span><span>        </span><span style="color:#c678dd;">if</span><span> x.</span><span style="color:#61afef;">is_prime</span><span>() {</span><span>
+</span><span>            </span><span style="color:#c678dd;">if</span><span> x.</span><span style="color:#61afef;">is_palindrome</span><span>() {</span><span>
+</span><span>                println!(</span><span style="color:#98c379;">&quot;</span><span style="color:#e5c07b;">{x}</span><span style="color:#98c379;"> is prime and a palindrome&quot;</span><span>);</span><span>
+</span><span>            }</span><span>
+</span><span>        }</span><span>
+</span><span>    }</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>Instead, we can check each condition separately, and <code>return</code> if it is <code>false</code>:</p>
+<pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5c6370;">/// Checks that x is between 1 and 100, prime, and a</span><span>
+</span><span style="color:#5c6370;">/// palindrome, and prints it if that is the case.</span><span>
+</span><span style="color:#c678dd;">fn </span><span style="color:#61afef;">f</span><span>(</span><span style="color:#e06c75;">x</span><span>: </span><span style="color:#c678dd;">i32</span><span>) {</span><span>
+</span><span>    </span><span style="color:#c678dd;">if</span><span> x </span><span style="color:#c678dd;">&lt; </span><span style="color:#e5c07b;">1 </span><span style="color:#c678dd;">||</span><span> x </span><span style="color:#c678dd;">&gt; </span><span style="color:#e5c07b;">100 </span><span>{</span><span>
+</span><span>        </span><span style="color:#c678dd;">return</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#c678dd;">if !</span><span>x.</span><span style="color:#61afef;">is_prime</span><span>() {</span><span>
+</span><span>        </span><span style="color:#c678dd;">return</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#c678dd;">if !</span><span>x.</span><span style="color:#61afef;">is_palindrome</span><span>() {</span><span>
+</span><span>        </span><span style="color:#c678dd;">return</span><span>;</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    println!(</span><span style="color:#98c379;">&quot;</span><span style="color:#e5c07b;">{x}</span><span style="color:#98c379;"> is prime and a palindrome&quot;</span><span>);</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p class="insight">
+Each function should be simplified until it allows such a pattern.
+</p>
+<p>If anyone knows me, they would know I <a href="https://github.com/dnbln/nb-rs/blob/c5326f3a555cc143fbc26cf98743e821d3ae8c77/src/category.rs#L3-L54">love</a> <a href="https://github.com/dnbln/robespierre/blob/800978a7ded0fe38cd19bc4bdc66f132440f3a5e/crates/robespierre/src/framework/standard/extractors/args.rs#L418-L458">rust</a> <a href="https://github.com/leafbuild/leafbuild/blob/a7fcc787eb16022404a6ef54794602f142c960ed/cmd/src/lib.rs#L3-L82">macros</a>,
+including proc_macros.</p>
+<p>So let's write a simple declarative macro:</p>
+<pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#61afef;">macro_rules! </span><span>guard {</span><span>
+</span><span>    (</span><span style="color:#e06c75;">$guard_expr</span><span>:</span><span style="color:#c678dd;">expr $</span><span>(, else </span><span style="color:#e06c75;">$else</span><span>:</span><span style="color:#c678dd;">expr</span><span>)?) </span><span style="color:#c678dd;">=&gt; </span><span>{</span><span>
+</span><span>        </span><span style="color:#c678dd;">if !</span><span style="color:#e06c75;">$guard_expr </span><span>{</span><span>
+</span><span>            </span><span style="color:#c678dd;">return $</span><span>(</span><span style="color:#e06c75;">$else</span><span>)</span><span style="color:#c678dd;">?</span><span>;</span><span>
+</span><span>        }</span><span>
+</span><span>    };</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>which works similarly to <a href="https://docs.swift.org/swift-book/ReferenceManual/Statements.html#ID524">swift's <code>guard</code> statements</a>.</p>
+<p>Using it, we can rewrite the above as:</p>
+<pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5c6370;">/// Checks that x is between 1 and 100, prime, and a</span><span>
+</span><span style="color:#5c6370;">/// palindrome, and prints it if that is the case.</span><span>
+</span><span style="color:#c678dd;">fn </span><span style="color:#61afef;">f</span><span>(</span><span style="color:#e06c75;">x</span><span>: </span><span style="color:#c678dd;">i32</span><span>) {</span><span>
+</span><span>    guard!(x </span><span style="color:#c678dd;">&gt;= </span><span style="color:#e5c07b;">1 </span><span style="color:#c678dd;">&amp;&amp;</span><span> x </span><span style="color:#c678dd;">&lt;= </span><span style="color:#e5c07b;">100</span><span>);</span><span>
+</span><span>    guard!(x.</span><span style="color:#61afef;">is_prime</span><span>());</span><span>
+</span><span>    guard!(x.</span><span style="color:#61afef;">is_palindrome</span><span>());</span><span>
+</span><span>
+</span><span>    println!(</span><span style="color:#98c379;">&quot;</span><span style="color:#e5c07b;">{x}</span><span style="color:#98c379;"> is prime and a palindrome&quot;</span><span>);</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>Similarly, <a href="https://github.com/rust-lang/rust/issues/87335">let-else statements</a> will get stabilized soon™, which will allow code like:</p>
+<pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span>#![</span><span style="color:#e06c75;">feature</span><span>(let_else)] </span><span style="color:#5c6370;">// currently only on nightly</span><span>
+</span><span>
+</span><span style="color:#c678dd;">fn </span><span style="color:#61afef;">f</span><span>(</span><span style="color:#e06c75;">x</span><span>: Option&lt;</span><span style="color:#c678dd;">i32</span><span>&gt;) -&gt; </span><span style="color:#c678dd;">i32 </span><span>{</span><span>
+</span><span>    </span><span style="color:#c678dd;">let </span><span>Some(x) </span><span style="color:#c678dd;">=</span><span> x </span><span style="color:#c678dd;">else </span><span>{ </span><span style="color:#c678dd;">return </span><span style="color:#e5c07b;">0</span><span>; };</span><span>
+</span><span>
+</span><span>    println!(</span><span style="color:#98c379;">&quot;x was Some(</span><span style="color:#e5c07b;">{x}</span><span style="color:#98c379;">)&quot;</span><span>);</span><span>
+</span><span>
+</span><span>    x</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<h2 id="meaningful-names">Meaningful names</h2>
+<p>When you read through your own code, it should feel almost like
+you're reading a book, and the closer you are to that goal, the
+better your code will get.</p>
+<p>That being said, it probably won't ever reach perfection.</p>
+<h3 id="short-named-variables">Short named variables</h3>
+<p>Short named variables are alright, as long as the scope in which
+they live is small.</p>
+<pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c678dd;">fn </span><span style="color:#61afef;">f</span><span>() -&gt; Vec&lt;</span><span style="color:#c678dd;">i32</span><span>&gt; {</span><span>
+</span><span>    </span><span style="color:#c678dd;">let mut</span><span> v </span><span style="color:#c678dd;">= </span><span>vec![];</span><span>
+</span><span>
+</span><span>    </span><span style="color:#c678dd;">for</span><span> i </span><span style="color:#c678dd;">in </span><span style="color:#e5c07b;">1</span><span style="color:#c678dd;">..</span><span style="color:#e5c07b;">10 </span><span>{</span><span>
+</span><span>        v.</span><span style="color:#61afef;">push</span><span>(</span><span style="color:#c678dd;">*</span><span>i);</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#c678dd;">return</span><span> v;</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>Here, both <code>v</code> and <code>i</code> are relatively short-lived, so their one
+letter names are justified. Say, now, that our code would look like this:</p>
+<pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c678dd;">fn </span><span style="color:#61afef;">f</span><span>() -&gt; Vec&lt;</span><span style="color:#c678dd;">i32</span><span>&gt; {</span><span>
+</span><span>    </span><span style="color:#c678dd;">let mut</span><span> v </span><span style="color:#c678dd;">= </span><span>vec![];</span><span>
+</span><span>
+</span><span>    </span><span style="color:#c678dd;">for</span><span> i </span><span style="color:#c678dd;">in </span><span style="color:#e5c07b;">1</span><span style="color:#c678dd;">..</span><span style="color:#e5c07b;">10 </span><span>{</span><span>
+</span><span>        v.</span><span style="color:#61afef;">push</span><span>(</span><span style="color:#c678dd;">*</span><span>i);</span><span>
+</span><span>        </span><span style="color:#5c6370;">// 100 other lines</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#c678dd;">return</span><span> v;</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>Here, <code>v</code>'s scope is pretty big, so when someone reads the source code,
+they will have to remember what <code>v</code> is when they reach the return.</p>
+<blockquote>
+<p>The shorter the scope the shorter the variable names,
+and the longer the function &amp; class names. 
+And vice versa.</p>
+<p>— Uncle Bob Martin, <a href="https://twitter.com/unclebobmartin/status/360029878126514177">tweet</a></p>
+</blockquote>
+<h2 id="intent-of-function-names">Intent of function names</h2>
+<blockquote>
+<p>Function names should clearly describe the intent.
+Together with the types of the arguments and return type,
+it should be obvious what it does.</p>
+<p>— Me</p>
+</blockquote>
+<p>In the examples above, the name <code>f</code> is not quite good
+enough to communicate what the function does, so let's fix that:</p>
+<pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#5c6370;">/// Checks that x is between 1 and 100, prime, and a</span><span>
+</span><span style="color:#5c6370;">/// palindrome, and prints it if that is the case.</span><span>
+</span><span style="color:#c678dd;">fn </span><span style="color:#61afef;">check_range_prime_palindrome_and_print</span><span>(</span><span style="color:#e06c75;">x</span><span>: </span><span style="color:#c678dd;">i32</span><span>) {</span><span>
+</span><span>    guard!(x </span><span style="color:#c678dd;">&gt;= </span><span style="color:#e5c07b;">1 </span><span style="color:#c678dd;">&amp;&amp;</span><span> x </span><span style="color:#c678dd;">&lt;= </span><span style="color:#e5c07b;">100</span><span>);</span><span>
+</span><span>    guard!(x.</span><span style="color:#61afef;">is_prime</span><span>());</span><span>
+</span><span>    guard!(x.</span><span style="color:#61afef;">is_palindrome</span><span>());</span><span>
+</span><span>
+</span><span>    println!(</span><span style="color:#98c379;">&quot;</span><span style="color:#e5c07b;">{x}</span><span style="color:#98c379;"> is prime and a palindrome&quot;</span><span>);</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<p>And for the other one:</p>
+<pre data-lang="rust" style="background-color:#282c34;color:#dcdfe4;" class="language-rust "><code class="language-rust" data-lang="rust"><span style="color:#c678dd;">fn </span><span style="color:#61afef;">build_one_through_ten_vec</span><span>() -&gt; Vec&lt;</span><span style="color:#c678dd;">i32</span><span>&gt; {</span><span>
+</span><span>    </span><span style="color:#c678dd;">let mut</span><span> v </span><span style="color:#c678dd;">= </span><span>vec![];</span><span>
+</span><span>
+</span><span>    </span><span style="color:#c678dd;">for</span><span> i </span><span style="color:#c678dd;">in </span><span style="color:#e5c07b;">1</span><span style="color:#c678dd;">..</span><span style="color:#e5c07b;">10 </span><span>{</span><span>
+</span><span>        v.</span><span style="color:#61afef;">push</span><span>(</span><span style="color:#c678dd;">*</span><span>i);</span><span>
+</span><span>    }</span><span>
+</span><span>
+</span><span>    </span><span style="color:#c678dd;">return</span><span> v;</span><span>
+</span><span>}</span><span>
+</span></code></pre>
+<h2 id="no-useless-comments">No useless comments</h2>
+<p>If a comment does not add any information, it should not be there.</p>
+<p>Note that that goes for plain comments, not for documentation.</p>
+
+    </div>
+
+    
+        <footer>
+            <hr>
+            <p>
+                
+                    Published by dnbln
+                
+                
+                    
+                    in <a href="https://blog.dnbln.dev/categories/coding/">coding</a>
+                
+                
+                    and
+                    tagged
+                    
+                        <a href="https://blog.dnbln.dev/tags/rust/">rust</a>
+                        
+                            
+                                
+                                    and
+                                
+                            
+                        
+                    
+                        <a href="https://blog.dnbln.dev/tags/coding-styles/">coding styles</a>
+                        
+                            
+                        
+                    
+                
+            </p>
+            
+            
+        </footer>
+    
+</article>
+
+
+    </body>
+
+</html>

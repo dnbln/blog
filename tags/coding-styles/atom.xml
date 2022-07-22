@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
+	<title> - coding styles</title>
+	<link href="https://blog.dnbln.dev/tags/coding-styles/atom.xml" rel="self" type="application/atom+xml"/>
+  <link href="https://blog.dnbln.dev/"/>
+	<generator uri="https://www.getzola.org/">Zola</generator>
+	<updated>2022-07-22T00:00:00+00:00</updated>
+	<id>https://blog.dnbln.dev/tags/coding-styles/atom.xml</id>
+	<entry xml:lang="en">
+		<title>Rust coding style</title>
+		<published>2022-07-22T00:00:00+00:00</published>
+		<updated>2022-07-22T00:00:00+00:00</updated>
+		<link href="https://blog.dnbln.dev/rs-coding-style/" type="text/html"/>
+		<id>https://blog.dnbln.dev/rs-coding-style/</id>
+		<content type="html">&lt;p&gt;Following are some of my reflections on how I would improve my Rust code.&lt;&#x2F;p&gt;
+&lt;h2 id=&quot;guards&quot;&gt;Guards&lt;&#x2F;h2&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;&#x2F; Checks that x is between 1 and 100, prime, and a&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;&#x2F; palindrome, and prints it if that is the case.&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;) {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt; x &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt; x &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;lt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;100 &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt; x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_prime&lt;&#x2F;span&gt;&lt;span&gt;() {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt; x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_palindrome&lt;&#x2F;span&gt;&lt;span&gt;() {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;                println!(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;{x}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; is prime and a palindrome&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Instead, we can check each condition separately, and &lt;code&gt;return&lt;&#x2F;code&gt; if it is &lt;code&gt;false&lt;&#x2F;code&gt;:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;&#x2F; Checks that x is between 1 and 100, prime, and a&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;&#x2F; palindrome, and prints it if that is the case.&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;) {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if&lt;&#x2F;span&gt;&lt;span&gt; x &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;lt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;||&lt;&#x2F;span&gt;&lt;span&gt; x &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;100 &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt;;&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if !&lt;&#x2F;span&gt;&lt;span&gt;x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_prime&lt;&#x2F;span&gt;&lt;span&gt;() {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt;;&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if !&lt;&#x2F;span&gt;&lt;span&gt;x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_palindrome&lt;&#x2F;span&gt;&lt;span&gt;() {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt;;&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;{x}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; is prime and a palindrome&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p class=&quot;insight&quot;&gt;
+Each function should be simplified until it allows such a pattern.
+&lt;&#x2F;p&gt;
+&lt;p&gt;If anyone knows me, they would know I &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;dnbln&#x2F;nb-rs&#x2F;blob&#x2F;c5326f3a555cc143fbc26cf98743e821d3ae8c77&#x2F;src&#x2F;category.rs#L3-L54&quot;&gt;love&lt;&#x2F;a&gt; &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;dnbln&#x2F;robespierre&#x2F;blob&#x2F;800978a7ded0fe38cd19bc4bdc66f132440f3a5e&#x2F;crates&#x2F;robespierre&#x2F;src&#x2F;framework&#x2F;standard&#x2F;extractors&#x2F;args.rs#L418-L458&quot;&gt;rust&lt;&#x2F;a&gt; &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;leafbuild&#x2F;leafbuild&#x2F;blob&#x2F;a7fcc787eb16022404a6ef54794602f142c960ed&#x2F;cmd&#x2F;src&#x2F;lib.rs#L3-L82&quot;&gt;macros&lt;&#x2F;a&gt;,
+including proc_macros.&lt;&#x2F;p&gt;
+&lt;p&gt;So let&#x27;s write a simple declarative macro:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;macro_rules! &lt;&#x2F;span&gt;&lt;span&gt;guard {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    (&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;$guard_expr&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;expr $&lt;&#x2F;span&gt;&lt;span&gt;(, else &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;$else&lt;&#x2F;span&gt;&lt;span&gt;:&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;expr&lt;&#x2F;span&gt;&lt;span&gt;)?) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&amp;gt; &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;if !&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;$guard_expr &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;            &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return $&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;$else&lt;&#x2F;span&gt;&lt;span&gt;)&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;?&lt;&#x2F;span&gt;&lt;span&gt;;&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    };&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;which works similarly to &lt;a href=&quot;https:&#x2F;&#x2F;docs.swift.org&#x2F;swift-book&#x2F;ReferenceManual&#x2F;Statements.html#ID524&quot;&gt;swift&#x27;s &lt;code&gt;guard&lt;&#x2F;code&gt; statements&lt;&#x2F;a&gt;.&lt;&#x2F;p&gt;
+&lt;p&gt;Using it, we can rewrite the above as:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;&#x2F; Checks that x is between 1 and 100, prime, and a&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;&#x2F; palindrome, and prints it if that is the case.&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;) {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    guard!(x &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt; x &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;lt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    guard!(x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_prime&lt;&#x2F;span&gt;&lt;span&gt;());&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    guard!(x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_palindrome&lt;&#x2F;span&gt;&lt;span&gt;());&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;{x}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; is prime and a palindrome&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Similarly, &lt;a href=&quot;https:&#x2F;&#x2F;github.com&#x2F;rust-lang&#x2F;rust&#x2F;issues&#x2F;87335&quot;&gt;let-else statements&lt;&#x2F;a&gt; will get stabilized soon™, which will allow code like:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span&gt;#![&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;feature&lt;&#x2F;span&gt;&lt;span&gt;(let_else)] &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; currently only on nightly&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;: Option&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt;) -&amp;gt; &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;i32 &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let &lt;&#x2F;span&gt;&lt;span&gt;Some(x) &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;=&lt;&#x2F;span&gt;&lt;span&gt; x &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;else &lt;&#x2F;span&gt;&lt;span&gt;{ &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;0&lt;&#x2F;span&gt;&lt;span&gt;; };&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;x was Some(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;{x}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;)&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    x&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;meaningful-names&quot;&gt;Meaningful names&lt;&#x2F;h2&gt;
+&lt;p&gt;When you read through your own code, it should feel almost like
+you&#x27;re reading a book, and the closer you are to that goal, the
+better your code will get.&lt;&#x2F;p&gt;
+&lt;p&gt;That being said, it probably won&#x27;t ever reach perfection.&lt;&#x2F;p&gt;
+&lt;h3 id=&quot;short-named-variables&quot;&gt;Short named variables&lt;&#x2F;h3&gt;
+&lt;p&gt;Short named variables are alright, as long as the scope in which
+they live is small.&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;() -&amp;gt; Vec&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; v &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;vec![];&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt; i &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;10 &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        v.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;i);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; v;&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Here, both &lt;code&gt;v&lt;&#x2F;code&gt; and &lt;code&gt;i&lt;&#x2F;code&gt; are relatively short-lived, so their one
+letter names are justified. Say, now, that our code would look like this:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;f&lt;&#x2F;span&gt;&lt;span&gt;() -&amp;gt; Vec&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; v &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;vec![];&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt; i &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;10 &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        v.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;i);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        &lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F; 100 other lines&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; v;&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;Here, &lt;code&gt;v&lt;&#x2F;code&gt;&#x27;s scope is pretty big, so when someone reads the source code,
+they will have to remember what &lt;code&gt;v&lt;&#x2F;code&gt; is when they reach the return.&lt;&#x2F;p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;The shorter the scope the shorter the variable names,
+and the longer the function &amp;amp; class names. 
+And vice versa.&lt;&#x2F;p&gt;
+&lt;p&gt;— Uncle Bob Martin, &lt;a href=&quot;https:&#x2F;&#x2F;twitter.com&#x2F;unclebobmartin&#x2F;status&#x2F;360029878126514177&quot;&gt;tweet&lt;&#x2F;a&gt;&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;h2 id=&quot;intent-of-function-names&quot;&gt;Intent of function names&lt;&#x2F;h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Function names should clearly describe the intent.
+Together with the types of the arguments and return type,
+it should be obvious what it does.&lt;&#x2F;p&gt;
+&lt;p&gt;— Me&lt;&#x2F;p&gt;
+&lt;&#x2F;blockquote&gt;
+&lt;p&gt;In the examples above, the name &lt;code&gt;f&lt;&#x2F;code&gt; is not quite good
+enough to communicate what the function does, so let&#x27;s fix that:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;&#x2F; Checks that x is between 1 and 100, prime, and a&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#5c6370;&quot;&gt;&#x2F;&#x2F;&#x2F; palindrome, and prints it if that is the case.&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;check_range_prime_palindrome_and_print&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e06c75;&quot;&gt;x&lt;&#x2F;span&gt;&lt;span&gt;: &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;) {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    guard!(x &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;gt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1 &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;amp;&amp;amp;&lt;&#x2F;span&gt;&lt;span&gt; x &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;&amp;lt;= &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;100&lt;&#x2F;span&gt;&lt;span&gt;);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    guard!(x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_prime&lt;&#x2F;span&gt;&lt;span&gt;());&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    guard!(x.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;is_palindrome&lt;&#x2F;span&gt;&lt;span&gt;());&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    println!(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt;&amp;quot;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;{x}&lt;&#x2F;span&gt;&lt;span style=&quot;color:#98c379;&quot;&gt; is prime and a palindrome&amp;quot;&lt;&#x2F;span&gt;&lt;span&gt;);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;p&gt;And for the other one:&lt;&#x2F;p&gt;
+&lt;pre data-lang=&quot;rust&quot; style=&quot;background-color:#282c34;color:#dcdfe4;&quot; class=&quot;language-rust &quot;&gt;&lt;code class=&quot;language-rust&quot; data-lang=&quot;rust&quot;&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;fn &lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;build_one_through_ten_vec&lt;&#x2F;span&gt;&lt;span&gt;() -&amp;gt; Vec&amp;lt;&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;i32&lt;&#x2F;span&gt;&lt;span&gt;&amp;gt; {&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;let mut&lt;&#x2F;span&gt;&lt;span&gt; v &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;= &lt;&#x2F;span&gt;&lt;span&gt;vec![];&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;for&lt;&#x2F;span&gt;&lt;span&gt; i &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;in &lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;1&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;..&lt;&#x2F;span&gt;&lt;span style=&quot;color:#e5c07b;&quot;&gt;10 &lt;&#x2F;span&gt;&lt;span&gt;{&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;        v.&lt;&#x2F;span&gt;&lt;span style=&quot;color:#61afef;&quot;&gt;push&lt;&#x2F;span&gt;&lt;span&gt;(&lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;*&lt;&#x2F;span&gt;&lt;span&gt;i);&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    }&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;    &lt;&#x2F;span&gt;&lt;span style=&quot;color:#c678dd;&quot;&gt;return&lt;&#x2F;span&gt;&lt;span&gt; v;&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;span&gt;}&lt;&#x2F;span&gt;&lt;span&gt;
+&lt;&#x2F;span&gt;&lt;&#x2F;code&gt;&lt;&#x2F;pre&gt;
+&lt;h2 id=&quot;no-useless-comments&quot;&gt;No useless comments&lt;&#x2F;h2&gt;
+&lt;p&gt;If a comment does not add any information, it should not be there.&lt;&#x2F;p&gt;
+&lt;p&gt;Note that that goes for plain comments, not for documentation.&lt;&#x2F;p&gt;
+</content>
+	</entry>
+</feed>
